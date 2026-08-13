@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Device Status Checker</title>
+
+    <!-- Add-in styles -->
+    <link rel="stylesheet" href="addin.css" />
+</head>
+<body>
+    <!--
+        Root container for the whole add-in.
+
+        Every id and class below is prefixed with "dsc-" (Device Status Checker).
+        MyGeotab injects this page into its own DOM, so unique prefixes stop our
+        elements and styles from clashing with MyGeotab's own ids and classes.
+    -->
+    <div id="dsc-app">
+
+        <!-- Page heading -->
+        <header class="dsc-header">
+            <h1 class="dsc-title">Device Status Checker</h1>
+            <p class="dsc-subtitle">Look up any device by its serial number</p>
+        </header>
+
+        <!-- Search area: the serial number input and the "Check Status" button -->
+        <section class="dsc-search">
+            <input
+                id="dsc-serial-input"
+                class="dsc-input"
+                type="text"
+                placeholder="Device serial number"
+                autocomplete="off"
+                spellcheck="false" />
+
+            <button id="dsc-check-button" class="dsc-button" type="button">
+                <!-- Spinner is hidden by default; addin.js shows it while the API call runs -->
+                <span id="dsc-button-spinner" class="dsc-spinner" hidden></span>
+                <span id="dsc-button-label">Check Status</span>
+            </button>
+
+            <!-- Empty state: subtle hint shown before the first search -->
+            <p id="dsc-hint" class="dsc-hint">Enter a device serial number to check its status</p>
+        </section>
+
+        <!--
+            Message area: reused for both the "not found" and error states.
+            addin.js fills in the text and un-hides it when needed.
+        -->
+        <p id="dsc-message" class="dsc-message" hidden></p>
+
+        <!-- Result card: hidden until a device is found -->
+        <section id="dsc-result" class="dsc-card" hidden>
+
+            <!-- Large colour-coded status badge: Online / Idle / Offline -->
+            <div id="dsc-badge" class="dsc-badge">Online</div>
+
+            <!-- Device details, rendered as label / value rows -->
+            <dl class="dsc-details">
+                <div class="dsc-row">
+                    <dt>Vehicle</dt>
+                    <dd id="dsc-vehicle-name">&mdash;</dd>
+                </div>
+                <div class="dsc-row">
+                    <dt>Serial number</dt>
+                    <dd id="dsc-serial-number">&mdash;</dd>
+                </div>
+                <div class="dsc-row">
+                    <dt>Driver</dt>
+                    <dd id="dsc-driver-name">&mdash;</dd>
+                </div>
+                <div class="dsc-row">
+                    <dt>Last ping</dt>
+                    <dd id="dsc-last-ping">&mdash;</dd>
+                </div>
+            </dl>
+
+            <!-- Small footer with the last known GPS position and speed -->
+            <p id="dsc-gps" class="dsc-gps" hidden></p>
+        </section>
+    </div>
+
+    <!-- Add-in logic (loaded last so the elements above already exist) -->
+    <script src="addin.js"></script>
+</body>
+</html>

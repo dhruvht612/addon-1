@@ -1,0 +1,299 @@
+/*
+ * Device Status Checker — styles
+ * -------------------------------
+ * Everything is scoped under #dsc-app (or .dsc- classes) because MyGeotab
+ * injects this page into its own DOM. Bare selectors like `p { ... }` would
+ * leak out and restyle MyGeotab itself, so we never use them.
+ *
+ * Colour palette:
+ *   background  #0D1B2A (dark navy)
+ *   button      #2563eb (blue)
+ *   online      #22c55e (green)
+ *   idle        #eab308 (yellow)
+ *   offline     #ef4444 (red)
+ */
+
+/* ------------------------------------------------------------------ */
+/* Page layout: navy background, white text, single centred column     */
+/* ------------------------------------------------------------------ */
+
+#dsc-app {
+    box-sizing: border-box;
+    min-height: 100vh;
+    padding: 48px 24px;
+
+    background: #0D1B2A;
+    color: #ffffff;
+    font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+    /* Stack header → search → result vertically, centred on the page */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Every element inside the add-in shares the same box model */
+#dsc-app *,
+#dsc-app *::before,
+#dsc-app *::after {
+    box-sizing: border-box;
+}
+
+/* ------------------------------------------------------------------ */
+/* Header                                                              */
+/* ------------------------------------------------------------------ */
+
+.dsc-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.dsc-title {
+    margin: 0 0 8px;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.dsc-subtitle {
+    margin: 0;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.55);
+}
+
+/* ------------------------------------------------------------------ */
+/* Search area: full-width input + button, capped to a readable width  */
+/* ------------------------------------------------------------------ */
+
+.dsc-search {
+    width: 100%;
+    max-width: 440px;
+}
+
+/* The serial number input */
+.dsc-input {
+    width: 100%;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+
+    font-size: 16px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    outline: none;
+}
+
+.dsc-input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+/* Blue focus ring so keyboard users can see where they are */
+.dsc-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+/* The "Check Status" button */
+.dsc-button {
+    width: 100%;
+    padding: 14px 16px;
+
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #2563eb;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+
+    /* Keeps the spinner and label side by side while loading */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    transition: background 0.15s ease;
+}
+
+.dsc-button:hover:not(:disabled) {
+    background: #1d4ed8;
+}
+
+/* Loading state: dim the button and show the system "busy" cursor */
+.dsc-button:disabled {
+    background: #1e40af;
+    cursor: progress;
+    opacity: 0.85;
+}
+
+/* ------------------------------------------------------------------ */
+/* Spinner: a small circle whose top edge is white, spun forever.      */
+/* Shown inside the button while the API call runs.                    */
+/* ------------------------------------------------------------------ */
+
+.dsc-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: dsc-spin 0.7s linear infinite;
+}
+
+@keyframes dsc-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* Empty-state hint and message area (not found / error)               */
+/* ------------------------------------------------------------------ */
+
+/* Subtle hint under the input, shown before the first search */
+.dsc-hint {
+    margin: 12px 0 0;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* "No device found..." and "Something went wrong..." messages */
+.dsc-message {
+    width: 100%;
+    max-width: 440px;
+    margin: 24px 0 0;
+    padding: 14px 16px;
+
+    text-align: center;
+    font-size: 15px;
+    color: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+}
+
+/* ------------------------------------------------------------------ */
+/* Result card: rounded corners, subtle border, and an inner glow      */
+/* that is tinted by a dsc-card--online/idle/offline modifier class.   */
+/* ------------------------------------------------------------------ */
+
+.dsc-card {
+    width: 100%;
+    max-width: 440px;
+    margin-top: 28px;
+    padding: 28px 24px;
+
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+}
+
+/* Inner glow tinted to match the status badge */
+.dsc-card--online {
+    box-shadow: inset 0 0 60px rgba(34, 197, 94, 0.10);
+    border-color: rgba(34, 197, 94, 0.35);
+}
+
+.dsc-card--idle {
+    box-shadow: inset 0 0 60px rgba(234, 179, 8, 0.10);
+    border-color: rgba(234, 179, 8, 0.35);
+}
+
+.dsc-card--offline {
+    box-shadow: inset 0 0 60px rgba(239, 68, 68, 0.10);
+    border-color: rgba(239, 68, 68, 0.35);
+}
+
+/* ------------------------------------------------------------------ */
+/* Status badge: the most prominent element on the card — a large,     */
+/* centred, colour-coded pill (Online / Idle / Offline).               */
+/* ------------------------------------------------------------------ */
+
+.dsc-badge {
+    display: block;
+    width: fit-content;
+    margin: 0 auto 24px;
+    padding: 12px 40px;
+
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
+    border-radius: 999px;  /* full pill shape */
+    border: 1px solid transparent;
+}
+
+/* Green: pinged within the last 5 minutes */
+.dsc-badge--online {
+    color: #4ade80;
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.45);
+    text-shadow: 0 0 18px rgba(34, 197, 94, 0.6);
+}
+
+/* Yellow: pinged within the last hour */
+.dsc-badge--idle {
+    color: #facc15;
+    background: rgba(234, 179, 8, 0.15);
+    border-color: rgba(234, 179, 8, 0.45);
+    text-shadow: 0 0 18px rgba(234, 179, 8, 0.6);
+}
+
+/* Red: last ping more than an hour ago */
+.dsc-badge--offline {
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.45);
+    text-shadow: 0 0 18px rgba(239, 68, 68, 0.6);
+}
+
+/* ------------------------------------------------------------------ */
+/* Device detail rows: label on the left, value on the right           */
+/* ------------------------------------------------------------------ */
+
+.dsc-details {
+    margin: 0;
+}
+
+.dsc-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* No divider under the last row — the card border already closes it */
+.dsc-row:last-child {
+    border-bottom: none;
+}
+
+/* Labels: quiet and uppercase so the values stand out */
+.dsc-row dt {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+/* Values: bright and right-aligned */
+.dsc-row dd {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: right;
+    color: #ffffff;
+    overflow-wrap: anywhere;  /* long names wrap instead of overflowing */
+}
+
+/* Small GPS footer under the detail rows */
+.dsc-gps {
+    margin: 16px 0 0;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+}
